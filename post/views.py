@@ -55,3 +55,12 @@ def update_post(slug):
     key = f"post:{post['id']}"
     r.set(key, json.dumps(body, default=json_default))
     return json.dumps(body, default=json_default)
+
+
+@blueprint.route('/api/posts/<slug>', methods=['DELETE'])
+def delete_post(slug):
+    post = get_redis_json_data(f'post:{slug}')
+    if not post:
+        raise InvalidUsage.post_not_found()
+    r.delete(f'post:{slug}')
+    return '', 204
